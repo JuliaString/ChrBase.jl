@@ -1,12 +1,12 @@
-# This file includes code originally part of Julia.n
+# This file includes code originally part of Julia
 # Licensed under MIT License, see LICENSE.md
 
 # The plan is to rewrite all of the functionality to not use the utf8proc library,
 # and to use tables loaded up on initialization, as with StringLiterals.jl
 
 # Currently, for characters outside the Latin1 subset, this depends on the following C calls:
-# utf8proc_decompose
-# utf8proc_reencode
+
+# utf8proc_errmsg
 # utf8proc_charwidth
 # utf8proc_category
 # utf8proc_category_string
@@ -15,6 +15,7 @@
 # utf8proc_totitle
 
 # For grapheme segmentation, this currently depends on the following 2 C calls:
+
 # utf8proc_grapheme_break
 # utf8proc_grapheme_break_stateful
 
@@ -32,8 +33,6 @@ utf8proc_charwidth(ch) = Int(ccall(:utf8proc_charwidth, Cint, (UInt32,), ch))
 @inline _lowercase_u(ch) = ccall(:utf8proc_tolower, UInt32, (UInt32,), ch)
 @inline _uppercase_u(ch) = ccall(:utf8proc_toupper, UInt32, (UInt32,), ch)
 @inline _titlecase_u(ch) = ccall(:utf8proc_totitle, UInt32, (UInt32,), ch)
-
-push!(dev_def, :utf8proc_error, :_lowercase_u, :_uppercase_u, :_titlecase_u)
 
 ############################################################################
 

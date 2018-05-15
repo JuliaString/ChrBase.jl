@@ -18,9 +18,9 @@ in(x::Chr, y::AbsChar) = x == y
 in(x::Chr, y::Chr) = x == y
 -(x::AbsChar, y::Chr) = Int(x) - Int(y)
 -(x::Chr, y::AbsChar) = Int(x) - Int(y)
--(x::Chr, y::Chr) = Int(x) - Int(y)
--(x::Chr, y::Integer) = Chr((Int32(x) - Int32(y))%UInt32)
-+(x::Chr, y::Integer) = Chr((Int32(x) + Int32(y))%UInt32)
+-(x::Chr, y::Chr)     = Int(x) - Int(y)
+-(x::T, y::Integer) where {T<:Chr} = T((Int32(x) - Int32(y))%UInt32)
++(x::T, y::Integer) where {T<:Chr} = T((Int32(x) + Int32(y))%UInt32)
 +(x::Integer, y::Chr) = y + x
 show(io::IO, cp::Chr)  = show(io, Char(cp))
 print(io::IO, cp::Chr) = print(io, Char(cp))

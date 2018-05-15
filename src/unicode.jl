@@ -5,6 +5,8 @@ Copyright 2017-2018 Gandalf Software, Inc., Scott P. Jones,
 Licensed under MIT License, see LICENSE.md
 =#
 
+# Todo: add correct definitions for is_letter, is_alphabetic
+
 # Recommended by deprecate
 @static if V6_COMPAT
     text_width(ch::Char) = charwidth(ch)
@@ -39,15 +41,15 @@ text_width(ch::ASCIIChr) = Int(32 <= codepoint(ch) <= 126)
 @inline category_abbrev(ch::CodeUnitTypes) = ch <= 0x10ffff ? utf8proc_cat_abbr(ch) : "In"
 @inline category_abbrev(ch::Chr)           = category_abbrev(codepoint(ch))
 
-category_string(ch::CodeUnitTypes) = category_strings[category_code(ch) + 1]
+category_string(ch::CodeUnitTypes) = Uni.category_strings[category_code(ch) + 1]
 category_string(ch::Chr)           = category_string(codepoint(ch))
 
-is_assigned(ch::CodeUnitTypes) = category_code(ch) != Uni.CN
+is_assigned(ch::CodeUnitTypes) = category_code(ch) != Uni.Cn
 is_assigned(ch::Chr)           = is_assigned(codepoint(ch))
 
-_cat_mask(a) = a
+_cat_mask(a) = UInt(a)
 @inline _cat_mask(a, b) = (1%UInt << a%UInt) | (1%UInt << b%UInt)
-@inline _cat_mask(rng::UnitRange) =
+@inline _cat_mask(rng::(@static V6_COMPAT ? Range : AbstractRange)) =
     ((2%UInt << rng.stop%UInt) - 1) & ~((1%UInt << rng.start%UInt) - 1)
 
 @inline _check_mask(ch, mask) = ((1%UInt << category_code(ch)%UInt) & mask) != 0
@@ -62,12 +64,12 @@ _cat_mask(a) = a
 @inline _isdigit(ch) = (ch - '0'%UInt8) <= 9
 @inline _isxdigit(ch) = _isdigit(ch) | (ch - 'A'%UInt8 < 6) | (ch - 'a'%UInt8 < 6)
 
-const _isupper_mask   = _cat_mask(Uni.LU, Uni.LT)
-const _isalpha_mask   = _cat_mask(Uni.LU : Uni.LO)
-const _isnumeric_mask = _cat_mask(Uni.ND : Uni.NO)
-const _ispunct_mask   = _cat_mask(Uni.PC : Uni.PO)
-const _isprint_mask   = _cat_mask(Uni.LU : Uni.ZS)
-const _isgraph_mask   = _cat_mask(Uni.LU : Uni.SO)
+const _isupper_mask   = _cat_mask(Uni.Lu, Uni.Lt)
+const _isalpha_mask   = _cat_mask(Uni.Lu : Uni.Lo)
+const _isnumeric_mask = _cat_mask(Uni.Nd : Uni.No)
+const _ispunct_mask   = _cat_mask(Uni.Pc : Uni.Po)
+const _isprint_mask   = _cat_mask(Uni.Lu : Uni.Zs)
+const _isgraph_mask   = _cat_mask(Uni.Lu : Uni.So)
 const _isalnum_mask   = _isnumeric_mask | _isalpha_mask
 
 ############################################################################
@@ -101,8 +103,8 @@ const _isnumeric_a = _isdigit
 
 @inline _isnumeric_u(ch) = _check_mask(ch, _isnumeric_mask)
 @inline _ispunct_u(ch)   = _check_mask(ch, _ispunct_mask)
-@inline _isspace_u(ch)   = category_code(ch) == Uni.ZS
-@inline _islower_u(ch)   = category_code(ch) == Uni.LL
+@inline _isspace_u(ch)   = category_code(ch) == Uni.Zs
+@inline _islower_u(ch)   = category_code(ch) == Uni.Ll
 @inline _isupper_u(ch)   = _check_mask(ch, _isupper_mask)
 @inline _isalpha_u(ch)   = _check_mask(ch, _isalpha_mask)
 @inline _isalnum_u(ch)   = _check_mask(ch, _isalnum_mask)
@@ -141,7 +143,7 @@ const _catfuns =
      (:space,        :space),
      (:lowercase,    :lower),
      (:uppercase,    :upper),
-     (:alpha,        :alpha),
+     (:letter,       :alpha),
      (:alphanumeric, :alnum),
      (:printable,    :print),
      (:graphic,      :graph))
@@ -172,3 +174,7 @@ else
     is_malformed(ch) = false
     is_overlong(ch) = false
 end
+
+@api public is_malformed, is_overlong
+@api define_develop _islower_a, _islower_u, _isupper_a, _isupper_l, _isupper_al, _isupper_u,
+                    _can_upper_l, _can_upper_ch, _can_upper_only_latin

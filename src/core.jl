@@ -14,15 +14,17 @@ for lst in cse_info
     length(lst) < 3 || continue
     chrnam = symstr(nam, "Chr")
     if String(nam)[1] != '_'
-        push!(api_def, chrnam)
+        @eval @api define_public $chrnam
     elseif nam == :_Latin
-        push!(dev_def, chrnam)
+        @api define_develop _LatinChr
     else
         continue
     end
-    @eval const $chrnam = Chr{$(symstr(nam, "CharSet")), $typ}
+    cs = symstr(nam, "CharSet")
+    @eval const $chrnam = Chr{$cs, $typ}
     @eval show(io::IO, ::Type{$chrnam}) = print(io, $(quotesym(chrnam)))
     @eval codepoint_cse(::Type{$chrnam}) = $(symstr(nam,"CSE"))
+    @eval (::Type{$chrnam})(v::Number) = Chr($cs, $typ(v))
 end
 
 codepoint(ch::Chr) = ch.v
@@ -37,7 +39,7 @@ const WideChars    = Union{UCS2Chr, UTF32Chr}
 
 codepoint_cse(::Type{Char}) = RawUTF8CSE
 
-const AbsChar = @static isdefined(Base, :AbstractChar) ? AbstractChar : Union{Char, Chr}
+const AbsChar = @static isdefined(Base, :AbstractChar) ? AbstractChar : Union{Char, AbstractChar}
 
 # Promotion rules for characters
 
@@ -99,14 +101,16 @@ codepoint_adj(::Type{T}, ch) where {T<:Union{Text2Chr,Text4Chr}} = ch%T
 
 # returns a random valid Unicode scalar value in the correct range for the type of character
 @static if V6_COMPAT
-import Base.Random: rand!, rand, AbstractRNG
-rand(r::AbstractRNG, ::Type{T}) where {T<:Chr} =
-    codepoint_adj(T, rand(r, codepoint_rng(T)))
-rand!(rng::AbstractRNG, A::AbstractArray, r::UnitRange{<:Chr}) =
-    rand!(rng, A, Base.Random.RangeGenerator(r))
+    import Base.Random: rand!, rand, AbstractRNG
+    rand(r::AbstractRNG, ::Type{T}) where {T<:Chr} =
+        codepoint_adj(T, rand(r, codepoint_rng(T)))
+    rand!(rng::AbstractRNG, A::AbstractArray, r::UnitRange{<:Chr}) =
+        rand!(rng, A, Base.Random.RangeGenerator(r))
 else
-Random.rand(r::Random.AbstractRNG, ::Random.SamplerType{T}) where {T<:Chr} =
-    codepoint_adj(T, rand(r, codepoint_rng(T)))
+    import Random: rand!, rand, AbstractRNG, SamplerType
+    
+    rand(r::AbstractRNG, ::SamplerType{T}) where {T<:Chr} =
+        codepoint_adj(T, rand(r, codepoint_rng(T)))
 end
 
 ==(x::Chr, y::AbsChar) = codepoint(x) == codepoint(y)
@@ -129,12 +133,22 @@ Base.hash(x::Chr, h::UInt) = hash(Char(x), h)
     (0xf0 | (ch >>>  18)%UInt8, 0x80 | ((ch >>> 12) & 0x3f)%UInt8,
      0x80 | ((ch >>>  6) & 0x3f)%UInt8, 0x80 | (ch & 0x3f)%UInt8)
 
+# Little-endian output here
+@inline get_utf8_16(ch) =
+    (ch >>> 6) | ((ch & 0x3f)%UInt16<<8) | 0x80c0
+@inline get_utf8_32(ch) =
+    (ch & 0xc0000 >>> 18) | (ch & 0x3f000 >>> 4) |
+    (ch & 0xfc0 << 10) | (ch & 0x3f)<<24 | 0x808080f0
+
 utf_trail(c::UInt8) = (0xe5000000 >>> ((c & 0xf0) >> 3)) & 0x3
 
 is_valid_continuation(c) = ((c & 0xc0) == 0x80)
 
 # Support functions for UTF-16 handling
 @inline get_utf16(ch) = (0xd7c0 + (ch >> 10))%UInt16, (0xdc00 + (ch & 0x3ff))%UInt16
+
+@inline get_utf16_32(ch) =
+    (0xd7c0 + (ch >>> 10))%UInt16 << 6 | (0xdc00 + (ch & 0x3ff))%UInt32
 
 is_surrogate_lead(c::Unsigned) = ((c & ~0x003ff) == 0xd800)
 is_surrogate_trail(c::Unsigned) = ((c & ~0x003ff) == 0xdc00)
