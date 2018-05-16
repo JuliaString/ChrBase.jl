@@ -177,4 +177,4 @@ end
 
 @api public is_malformed, is_overlong
 @api define_develop _islower_a, _islower_u, _isupper_a, _isupper_l, _isupper_al, _isupper_u,
-                    _can_upper_l, _can_upper_ch, _can_upper_only_latin
+                    _can_upper, _can_upper_l, _can_upper_ch, _can_upper_only_latin

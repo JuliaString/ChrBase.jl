@@ -9,7 +9,8 @@ using APITools
 
 @static V6_COMPAT ? (using Base.Test) : (using Test)
 
-@testset "Characters" for C in (ASCIIChr, LatinChr, UCS2Chr, UTF32Chr, Char)
+for C in (ASCIIChr, LatinChr, UCS2Chr, UTF32Chr, Char)
+@testset "$C" begin
 
     maxch = typemax(C)
 
@@ -70,4 +71,5 @@ using APITools
         @test !is_valid(C, Char(0xd800))
         @test !is_valid(C, Char(0xdfff))
     end
+end
 end
