@@ -9,7 +9,6 @@ In part based on code for Char in Julia
 module Chars
 
 using APITools
-@api init
 
 @api extend StrAPI, CharSetEncodings
 
