@@ -12,18 +12,21 @@ using APITools
 
 @api extend StrAPI, CharSetEncodings
 
-@api define_public Chr
+@api public Chr
 
-@api define_develop get_utf8_2, get_utf8_3, get_utf8_4, get_utf8_16, get_utf8_32, utf_trail,
-                    is_valid_continuation, get_utf16, get_utf16_32,
-                    is_surrogate_lead, is_surrogate_trail, is_surrogate_codeunit,
-                    LatinChars, ByteChars, WideChars, AbsChar, bytoff, chroff, chrdiff,
-                    codepoint_cse, codepoint_rng, codepoint_adj, write_utf8, write_utf16,
-                    utf8proc_error, _write_utf8_2, _write_utf8_3, _write_utf8_4, _write_ucs2,
-                    _lowercase_l, _uppercase_l, _lowercase_u, _uppercase_u, _titlecase_u,
-                    _can_upper_latin, _can_upper_only_latin, _can_upper_ch, _can_lower_ch
+@api public! is_malformed, is_overlong
 
-@api develop _isvalid_chr
+@api develop get_utf8_2, get_utf8_3, get_utf8_4, get_utf8_16, get_utf8_32, get_utf16, get_utf16_32,
+             is_valid_continuation, is_surrogate_lead, is_surrogate_trail, is_surrogate_codeunit,
+             LatinChars, ByteChars, WideChars, AbsChar, bytoff, chroff, chrdiff, utf_trail,
+             codepoint_cse, codepoint_rng, codepoint_adj, utf8proc_error,
+             write_utf8, write_utf16, _write_utf8_2, _write_utf8_3, _write_utf8_4, _write_ucs2,
+             _lowercase_l, _uppercase_l, _lowercase_u, _uppercase_u, _titlecase_u,
+             _islower_a, _islower_u, _isupper_a, _isupper_l, _isupper_al, _isupper_u,
+             _can_upper_latin, _can_upper_only_latin, _can_upper_ch, _can_lower_ch,
+             _can_upper, _can_upper_l
+
+@api develop! _isvalid_chr
 
 include("core.jl")
 @static V6_COMPAT && include("compat.jl")

@@ -14,9 +14,9 @@ for lst in cse_info
     length(lst) < 3 || continue
     chrnam = symstr(nam, "Chr")
     if String(nam)[1] != '_'
-        @eval @api define_public $chrnam
+        @eval @api public $chrnam
     elseif nam == :_Latin
-        @api define_develop _LatinChr
+        @api develop _LatinChr
     else
         continue
     end

@@ -6,8 +6,6 @@ using APITools
 
 @api test StrAPI, CharSetEncodings, Chars
 
-@static V6_COMPAT ? (using Base.Test) : (using Test)
-
 for C in (ASCIIChr, LatinChr, UCS2Chr, UTF32Chr, Char)
 @testset "$C" begin
 
