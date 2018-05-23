@@ -1,4 +1,4 @@
-# Chars Chr type and core functions
+# ChrBase Chr type and core functions
 # Copyright 2017-2018 Gandalf Software, Inc., Scott P. Jones
 # Licensed under MIT License, see LICENSE.md
 

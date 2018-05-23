@@ -4,7 +4,7 @@
 
 using ModuleInterfaceTools
 
-@api test StrAPI, CharSetEncodings, Chars
+@api test StrAPI, CharSetEncodings, ChrBase
 
 for C in (ASCIIChr, LatinChr, UCS2Chr, UTF32Chr, Char)
 @testset "$C" begin

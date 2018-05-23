@@ -1,12 +1,12 @@
 __precompile__(true)
 """
-Chars package
+ChrBase package
 
 Copyright 2017-2018 Gandalf Software, Inc., Scott P. Jones, and contributors to julia
 Licensed under MIT License, see LICENSE.md
 In part based on code for Char in Julia
 """
-module Chars
+module ChrBase
 
 using ModuleInterfaceTools
 
@@ -38,4 +38,4 @@ include("utf8proc.jl")
 
 @api freeze
 
-end # module Chars
+end # module ChrBase
