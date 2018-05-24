@@ -1,0 +1,12 @@
+name = "ChrBase"
+desc = "Basic functionality for Chr type"
+authors = ["ScottPJones <scottjones@alum.mit.edu>"]
+keywords = ["Characters"]
+license = "MIT"
+uuid = "40048718-5f69-11e8-3be1-2f493f2f747a"
+repo = "https://github.com/JuliaString/ChrBase.jl.git"
+
+version = "0.1.0"
+[deps]
+CharSetEncodings = "cb9422de-a9d8-5b68-86db-ff05833ab307"
+
