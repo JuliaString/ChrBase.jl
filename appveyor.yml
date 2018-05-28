@@ -45,8 +45,6 @@ build_script:
       if VERSION < v\"0.7.0-DEV.5183\";
           for n in (\"ModuleInterfaceTools\", \"StrAPI\", \"CharSetEncodings\"); Pkg.add(n); end;
           Pkg.clone(pwd(), pkg);
-      else;
-          Pkg.add(pwd(), pkg);
       end"
 
 test_script:
