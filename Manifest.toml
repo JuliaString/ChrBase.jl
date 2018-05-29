@@ -1,17 +1,13 @@
 [[CharSetEncodings]]
-git-tree-sha1 = "11fac55ce42224e9392076dfbd22f81a7073e89a"
 repo-rev = ""
 repo-url = "https://github.com/JuliaString/CharSetEncodings.jl"
 uuid = "cb9422de-a9d8-5b68-86db-ff05833ab307"
-version = "0.1.0+"
 
 [[ModuleInterfaceTools]]
 deps = ["Pkg", "Test"]
-git-tree-sha1 = "9114f9ebc59bcaec2d69fc20fd01cf4897b0c0da"
 repo-rev = ""
 repo-url = "https://github.com/JuliaString/ModuleInterfaceTools.jl"
 uuid = "5cb8414e-7aab-5a03-a681-351269c074bf"
-version = "0.1.0"
 
 [[Pkg]]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
@@ -21,11 +17,9 @@ uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[StrAPI]]
 deps = ["ModuleInterfaceTools", "Random"]
-git-tree-sha1 = "d1b48d233ca865db84abd031088228dba3291872"
 repo-rev = ""
 repo-url = "https://github.com/JuliaString/StrAPI.jl"
 uuid = "69e7dfc3-c4d0-5e14-8d95-d6042a05b383"
-version = "0.1.1"
 
 [[Test]]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
