@@ -4,6 +4,8 @@
 
 using ModuleInterfaceTools
 
+@static V6_COMPAT || (using Pkg)
+
 @api test StrAPI, CharSetEncodings, ChrBase
 
 for C in (ASCIIChr, LatinChr, UCS2Chr, UTF32Chr, Char)

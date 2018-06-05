@@ -1,2 +1,4 @@
 julia 0.6
-CharSetEncodings
+ModuleInterfaceTools 0.1.2
+StrAPI 0.1.1
+CharSetEncodings 0.1.1
