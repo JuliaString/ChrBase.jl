@@ -4,9 +4,7 @@
 
 using ModuleInterfaceTools
 
-@static V6_COMPAT || (using Pkg)
-
-@api test StrAPI, CharSetEncodings, ChrBase
+@api test ChrBase
 
 for C in (ASCIIChr, LatinChr, UCS2Chr, UTF32Chr, Char)
 @testset "$C" begin
