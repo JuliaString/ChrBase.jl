@@ -10,7 +10,7 @@ module ChrBase
 
 using ModuleInterfaceTools
 
-@api extend! StrAPI, CharSetEncodings
+@api extend! CharSetEncodings
 
 @api public Chr
 
