@@ -4,6 +4,8 @@
 
 using ModuleInterfaceTools
 
+ModuleInterfaceTools.debug[] = true
+
 @api test ChrBase
 
 for C in (ASCIIChr, LatinChr, UCS2Chr, UTF32Chr, Char)
