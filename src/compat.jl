@@ -9,9 +9,13 @@ lastindex(cp::Chr) = 1
 getindex(cp::Chr) = cp
 first(cp::Chr) = cp
 last(cp::Chr) = cp
-start(cp::Chr) = false
-next(cp::Chr, state) = (cp, true)
-done(cp::Chr, state) = state
+
+@static if !NEW_ITERATE
+    start(cp::Chr) = false
+    next(cp::Chr, state) = (cp, true)
+    done(cp::Chr, state) = state
+end
+
 isempty(cp::Chr) = false
 in(x::AbsChar, y::Chr) = x == y
 in(x::Chr, y::AbsChar) = x == y
