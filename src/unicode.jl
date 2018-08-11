@@ -48,11 +48,11 @@ is_assigned(ch::CodeUnitTypes) = category_code(ch) != Uni.Cn
 is_assigned(ch::Chr)           = is_assigned(codepoint(ch))
 
 _cat_mask(a) = UInt(a)
-@inline _cat_mask(a, b) = (1%UInt << a%UInt) | (1%UInt << b%UInt)
+@inline _cat_mask(a, b) = (UInt(1) << (a%UInt)) | (UInt(1) << (b%UInt))
 @inline _cat_mask(rng::(@static V6_COMPAT ? Range : AbstractRange)) =
-    ((2%UInt << rng.stop%UInt) - 1) & ~((1%UInt << rng.start%UInt) - 1)
+    ((UInt(2) << (rng.stop%UInt)) - UInt(1)) & ~((UInt(1) << (rng.start%UInt)) - UInt(1))
 
-@inline _check_mask(ch, mask) = ((1%UInt << category_code(ch)%UInt) & mask) != 0
+@inline _check_mask(ch, mask) = ((UInt(1) << category_code(ch)%UInt) & mask) != 0
 
 ## libc character class predicates ##
 
@@ -76,7 +76,7 @@ const _isalnum_mask   = _isnumeric_mask | _isalpha_mask
 # Definitions for characters in the ASCII subset of Unicode
 
 const _isnumeric_a = _isdigit
-@inline _ispunct_a(ch) = ((1%UInt128 << ch) & 0x2800_0000_b800_0001_8c00_f7ee_0000_0000) != 0
+@inline _ispunct_a(ch) = ((UInt128(1) << ch) & 0x2800_0000_b800_0001_8c00_f7ee_0000_0000) != 0
 @inline _isspace_a(ch) = (ch == 32) | (9 <= ch <= 13)
 @inline _islower_a(ch) = (ch - 'a'%UInt8) < 26
 @inline _isupper_a(ch) = (ch - 'A'%UInt8) < 26
@@ -89,7 +89,7 @@ const _isnumeric_a = _isdigit
 # Definitions for characters in the Latin1 subset of Unicode, but not in the ASCII subset
 
 @inline _isnumeric_l(ch) = (ch <= 0xbe && ((1<<(ch-0xb2)) & 0x1c83) != 0)
-@inline _ispunct_l(ch)   = ((1%UInt64 << (ch-0x80)) & 0x88c0_0882_0000_0000) != 0
+@inline _ispunct_l(ch)   = ((UInt64(1) << (ch-0x80)) & 0x88c0_0882_0000_0000) != 0
 @inline _isspace_l(ch)   = (ch == 0x85) | (ch == 0xa0)
 @inline _islower_l(c)    = ((0xdf <= c <= 0xff) & (c != 0xf7)) | (c == 0xb5)
 @inline _isupper_l(c)    = (0xc0 <= c%UInt8 <= 0xde) & (c != 0xd7)

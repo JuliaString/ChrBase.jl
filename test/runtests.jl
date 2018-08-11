@@ -4,7 +4,7 @@
 
 using ModuleInterfaceTools
 
-ModuleInterfaceTools.debug[] = true
+#ModuleInterfaceTools.debug[] = true
 
 @api test ChrBase
 

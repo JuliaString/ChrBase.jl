@@ -126,19 +126,19 @@ Base.hash(x::Chr, h::UInt) = hash(Char(x), h)
 
 # Support functions for UTF-8 handling
 @inline get_utf8_2(ch) =
-    (0xc0 | (ch >>> 6)%UInt8, 0x80 | (ch & 0x3f)%UInt8)
+    (0xc0 | ((ch >>> 6)%UInt8), 0x80 | ((ch & 0x3f)%UInt8))
 @inline get_utf8_3(ch) =
-    (0xe0 | (ch >>> 12)%UInt8, 0x80 | ((ch >>> 6) & 0x3f)%UInt8, 0x80 | (ch & 0x3f)%UInt8)
+    (0xe0 | ((ch >>> 12)%UInt8), 0x80 | ((ch >>> 6) & 0x3f)%UInt8, 0x80 | ((ch & 0x3f)%UInt8))
 @inline get_utf8_4(ch) =
-    (0xf0 | (ch >>>  18)%UInt8, 0x80 | ((ch >>> 12) & 0x3f)%UInt8,
-     0x80 | ((ch >>>  6) & 0x3f)%UInt8, 0x80 | (ch & 0x3f)%UInt8)
+    (0xf0 | ((ch >>>  18)%UInt8), 0x80 | (((ch >>> 12) & 0x3f)%UInt8),
+     0x80 | ((ch >>>  6) & 0x3f)%UInt8, 0x80 | ((ch & 0x3f)%UInt8))
 
 # Little-endian output here
 @inline get_utf8_16(ch) =
-    (ch >>> 6) | ((ch & 0x3f)%UInt16<<8) | 0x80c0
+    (ch >>> 6) | (((ch & 0x3f)%UInt16)<<8) | 0x80c0
 @inline get_utf8_32(ch) =
-    (ch & 0xc0000 >>> 18) | (ch & 0x3f000 >>> 4) |
-    (ch & 0xfc0 << 10) | (ch & 0x3f)<<24 | 0x808080f0
+    ((ch & 0xc0000) >>> 18) | ((ch & 0x3f000) >>> 4) |
+    ((ch & 0xfc0) << 10) | (ch & 0x3f)<<24 | 0x808080f0
 
 utf_trail(c::UInt8) = (0xe5000000 >>> ((c & 0xf0) >> 3)) & 0x3
 
@@ -148,7 +148,7 @@ is_valid_continuation(c) = ((c & 0xc0) == 0x80)
 @inline get_utf16(ch) = (0xd7c0 + (ch >> 10))%UInt16, (0xdc00 + (ch & 0x3ff))%UInt16
 
 @inline get_utf16_32(ch) =
-    (0xd7c0 + (ch >>> 10))%UInt16 << 6 | (0xdc00 + (ch & 0x3ff))%UInt32
+    ((0xd7c0 + (ch >>> 10))%UInt16) << 6 | (0xdc00 + (ch & 0x3ff))%UInt32
 
 is_surrogate_lead(c::Unsigned) = ((c & ~0x003ff) == 0xd800)
 is_surrogate_trail(c::Unsigned) = ((c & ~0x003ff) == 0xdc00)
