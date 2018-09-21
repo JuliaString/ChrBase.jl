@@ -52,7 +52,7 @@ _cat_mask(a) = UInt(a)
 @inline _cat_mask(rng::(@static V6_COMPAT ? Range : AbstractRange)) =
     ((UInt(2) << (rng.stop%UInt)) - UInt(1)) & ~((UInt(1) << (rng.start%UInt)) - UInt(1))
 
-@inline _check_mask(ch, mask) = ((UInt(1) << category_code(ch)%UInt) & mask) != 0
+@inline _check_mask(ch, mask) = ((UInt(1) << (category_code(ch)%UInt)) & mask) != 0
 
 ## libc character class predicates ##
 
@@ -61,8 +61,8 @@ _cat_mask(a) = UInt(a)
 @inline _can_upper(c) = _islower_a(c) | _can_upper_l(c)
 
 @inline _iscntrl(ch) = (ch <= 0x1f) | (0x7f <= ch <= 0x9f)
-@inline _isdigit(ch) = (ch - '0'%UInt8) <= 9
-@inline _isxdigit(ch) = _isdigit(ch) | (ch - 'A'%UInt8 < 6) | (ch - 'a'%UInt8 < 6)
+@inline _isdigit(ch) = (ch - ('0'%UInt8)) <= 9
+@inline _isxdigit(ch) = _isdigit(ch) | (ch - ('A'%UInt8) < 6) | (ch - ('a'%UInt8) < 6)
 
 const _isupper_mask   = _cat_mask(Uni.Lu, Uni.Lt)
 const _isalpha_mask   = _cat_mask(Uni.Lu : Uni.Lo)
