@@ -20,6 +20,21 @@ for C in (ASCIIChr, LatinChr, UCS2Chr, UTF32Chr, Char)
         @test last(rng) === C('\x7f')
     end
 
+    C != Char && @testset "Casefold character" begin
+        for c = 0:UInt(maxch)
+            is_valid(C, c) || continue
+            ch = C(c)
+            cj = Char(c)
+            uj = uppercase(cj)
+            if uj <= maxch
+                uc = uppercase(ch)
+                uc == uj || println(" $c: $maxch $uc $uj")
+                @test uc == uj
+            end
+            @test lowercase(ch) == lowercase(cj)
+        end
+    end
+
     @testset "Edge conditions" begin
         for (val, pass) in (
             (0, true), (0xd7ff, true),

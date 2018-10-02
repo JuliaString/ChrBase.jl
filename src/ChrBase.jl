@@ -22,8 +22,8 @@ using ModuleInterfaceTools
              codepoint_cse, codepoint_rng, codepoint_adj, utf8proc_error,
              write_utf8, write_utf16, _write_utf8_2, _write_utf8_3, _write_utf8_4, _write_ucs2,
              _lowercase_l, _uppercase_l, _lowercase_u, _uppercase_u, _titlecase_u,
-             _islower_a, _islower_u, _isupper_a, _isupper_l, _isupper_al, _isupper_u,
-             _can_upper_ch, _can_lower_ch, _can_upper, _can_upper_l
+             _islower_a, _islower_l, _islower_u, _isupper_a, _isupper_l, _isupper_al, _isupper_u,
+             _can_upper, _can_upper_l
 
 @api develop! _isvalid_chr
 

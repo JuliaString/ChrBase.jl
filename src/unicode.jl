@@ -77,9 +77,9 @@ const _isalnum_mask   = _isnumeric_mask | _isalpha_mask
 
 const _isnumeric_a = _isdigit
 @inline _ispunct_a(ch) = ((UInt128(1) << ch) & 0x2800_0000_b800_0001_8c00_f7ee_0000_0000) != 0
-@inline _isspace_a(ch) = (ch == 32) | (9 <= ch <= 13)
-@inline _islower_a(ch) = (ch - 'a'%UInt8) < 26
-@inline _isupper_a(ch) = (ch - 'A'%UInt8) < 26
+@inline _isspace_a(ch) = (ch == 0x20) | (0x9 <= ch <= 0xd)
+@inline _islower_a(ch) = (ch%UInt8 - 'a'%UInt8) < 0x1a
+@inline _isupper_a(ch) = (ch%UInt8 - 'A'%UInt8) < 0x1a
 @inline _isalpha_a(ch) = _islower_a(ch) | _isupper_a(ch)
 @inline _isalnum_a(ch) = _isdigit(ch) | _isalpha_a(ch)
 @inline _isprint_a(ch) = 0x20 <= ch < 0x7f
