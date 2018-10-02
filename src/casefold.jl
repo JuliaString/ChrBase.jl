@@ -28,15 +28,21 @@ uppercase(ch::LatinChr) = LatinChr(_uppercase_l(codepoint(ch)))
 function uppercase(ch::_LatinChr)
     cb = codepoint(ch)
     _can_upper(cb) && return _LatinChr(cb - 0x20)
-    # We don't uppercase 0xdf, the ß character
-    cb == 0xb5 ? UCS2Chr(0x39c) : (cb == 0xff ? UCS2Chr(0x178) : ch)
+    # We didn't used to uppercase 0xdf, the ß character, now we do
+    !V6_COMPAT && cb == 0xdf && return UCS2Chr(0x1e9e)
+    cb == 0xb5 ? UCS2Chr(0x39c) : cb == 0xff ? UCS2Chr(0x178) : ch
 end
 titlecase(ch::LatinChars) = uppercase(ch)
 
-_can_upper_latin(ch)      = _can_upper(ch) | (ch == 0xb5) | (ch == 0xff)
-_can_upper_only_latin(ch) = _can_upper_l(ch) | (ch == 0xb5) | (ch == 0xff)
+@static if V6_COMPAT
+    @inline _can_upper_ch(ch) =
+        (ch <= 0x7f
+         ? _islower_a(ch)
+         : (ch > 0xff ? _islower_u(ch) : ifelse(c > 0xdf, c != 0xf7, c == 0xb5)))
+else
+    @inline _can_upper_ch(ch) =
+        ch <= 0x7f ? _islower_a(ch) : (ch <= 0xff ? _is_lower_l(ch) : _islower_u(ch))
+end
 
-@inline _can_upper_ch(ch) =
-    ch <= 0x7f ? _islower_a(ch) : (ch <= 0xff ? _can_upper_only_latin(ch) : _islower_u(ch))
 @inline _can_lower_ch(ch) =
     ch <= 0x7f ? _isupper_a(ch) : (ch <= 0xff ? _isupper_l(ch) : _isupper_u(ch))
