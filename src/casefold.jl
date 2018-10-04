@@ -25,7 +25,9 @@ uppercase(ch::ASCIIChr) = _islower_a(ch) ? ASCIIChr(ch - 0x20) : ch
 titlecase(ch::ASCIIChr) = uppercase(ch)
 
 lowercase(ch::T) where {T<:LatinChars} = T(_lowercase_l(codepoint(ch)))
-uppercase(ch::LatinChr) = LatinChr(_uppercase_l(codepoint(ch)))
+
+_uppercase_latin(ch) = _can_upper(ch) ? ch - 0x20 : ch
+uppercase(ch::LatinChr) = LatinChr(_uppercase_latin(codepoint(ch)))
 
 # Special handling for case where this is just an optimization of the first 256 bytes of Unicode,
 # and not the 8-bit ISO 8859-1 character set
