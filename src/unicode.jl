@@ -56,10 +56,6 @@ _cat_mask(a) = UInt(a)
 
 ## libc character class predicates ##
 
-# 0xb5, 0xdf, and 0xff cannot be uppercased in LatinCSE, although they are lowercase
-@inline _can_upper_l(c) = (0xe0 <= c <= 0xfe) & (c != 0xf7)
-@inline _can_upper(c) = _islower_a(c) | _can_upper_l(c)
-
 @inline _iscntrl(ch) = (ch <= 0x1f) | (0x7f <= ch <= 0x9f)
 @inline _isdigit(ch) = (ch - ('0'%UInt8)) <= 9
 @inline _isxdigit(ch) = _isdigit(ch) | (ch - ('A'%UInt8) < 6) | (ch - ('a'%UInt8) < 6)
@@ -75,12 +71,13 @@ const _isalnum_mask   = _isnumeric_mask | _isalpha_mask
 ############################################################################
 # Definitions for characters in the ASCII subset of Unicode
 
+@inline _is_lower_a(ch) = (ch%UInt8 - 'a'%UInt8) < 0x1a
+@inline _is_upper_a(ch) = (ch%UInt8 - 'A'%UInt8) < 0x1a
+
 const _isnumeric_a = _isdigit
 @inline _ispunct_a(ch) = ((UInt128(1) << ch) & 0x2800_0000_b800_0001_8c00_f7ee_0000_0000) != 0
 @inline _isspace_a(ch) = (ch == 0x20) | (0x9 <= ch <= 0xd)
-@inline _islower_a(ch) = (ch%UInt8 - 'a'%UInt8) < 0x1a
-@inline _isupper_a(ch) = (ch%UInt8 - 'A'%UInt8) < 0x1a
-@inline _isalpha_a(ch) = _islower_a(ch) | _isupper_a(ch)
+@inline _isalpha_a(ch) = _is_lower_a(ch) | _is_upper_a(ch)
 @inline _isalnum_a(ch) = _isdigit(ch) | _isalpha_a(ch)
 @inline _isprint_a(ch) = 0x20 <= ch < 0x7f
 @inline _isgraph_a(ch) = 0x20 < ch < 0x7f
@@ -88,11 +85,12 @@ const _isnumeric_a = _isdigit
 ############################################################################
 # Definitions for characters in the Latin1 subset of Unicode, but not in the ASCII subset
 
+@inline _is_lower_l(c)   = ((0xdf <= c <= 0xff) & (c != 0xf7)) | (c == 0xb5)
+@inline _is_upper_l(c)   = (0xc0 <= c%UInt8 <= 0xde) & (c != 0xd7)
+
 @inline _isnumeric_l(ch) = (ch <= 0xbe && ((1<<(ch-0xb2)) & 0x1c83) != 0)
 @inline _ispunct_l(ch)   = ((UInt64(1) << (ch-0x80)) & 0x88c0_0882_0000_0000) != 0
 @inline _isspace_l(ch)   = (ch == 0x85) | (ch == 0xa0)
-@inline _islower_l(c)    = ((0xdf <= c <= 0xff) & (c != 0xf7)) | (c == 0xb5)
-@inline _isupper_l(c)    = (0xc0 <= c%UInt8 <= 0xde) & (c != 0xd7)
 @inline _isalpha_l(c)    = ((0xc0 <= c <= 0xff) & (c != 0xf7) & (c != 0xd7)) | (c == 0xb5)
 @inline _isalnum_l(c)    = _isalpha_l(c) || _isnumeric_l(c)
 @inline _isprint_l(ch)   = ((0xa0 <= ch <= 0xff) & (ch != 0xad))
@@ -104,8 +102,6 @@ const _isnumeric_a = _isdigit
 @inline _isnumeric_u(ch) = _check_mask(ch, _isnumeric_mask)
 @inline _ispunct_u(ch)   = _check_mask(ch, _ispunct_mask)
 @inline _isspace_u(ch)   = category_code(ch) == Uni.Zs
-@inline _islower_u(ch)   = category_code(ch) == Uni.Ll
-@inline _isupper_u(ch)   = _check_mask(ch, _isupper_mask)
 @inline _isalpha_u(ch)   = _check_mask(ch, _isalpha_mask)
 @inline _isalnum_u(ch)   = _check_mask(ch, _isalnum_mask)
 @inline _isprint_u(ch)   = _check_mask(ch, _isprint_mask)
@@ -149,14 +145,16 @@ const _catfuns =
      (:graphic,      :graph))
 
 for (nnam, fnam) in _catfuns
-    isnam  = Symbol(string("is_", nnam))
-    namroot  = string("_is", fnam)
+    isnam   = Symbol(string("is_", nnam))
+    flg = (fnam == :lower || fnam == :upper)
+    namroot = string(flg ? "_is_" : "_is", fnam)
     fnam_a  = Symbol(string(namroot, "_a"))
     fnam_al = Symbol(string(namroot, "_al"))
     fnam_ch = Symbol(string(namroot, "_ch"))
         
     @eval $(fnam_al)(ch) = is_ascii(ch) ? $(fnam_a)(ch) : $(Symbol(string(namroot, "_l")))(ch)
-    @eval $(fnam_ch)(ch) = is_latin(ch) ? $(fnam_al)(ch) : $(Symbol(string(namroot, "_u")))(ch)
+    flg ||
+        @eval $(fnam_ch)(ch) = is_latin(ch) ? $(fnam_al)(ch) : $(Symbol(string(namroot, "_u")))(ch)
     @eval $(isnam)(ch::CodeUnitTypes)  = $(fnam_ch)(ch)
     @eval $(isnam)(ch::Chr)            = $(fnam_ch)(codepoint(ch))
     @eval $(isnam)(ch::ASCIIChr)       = $(fnam_a)(codepoint(ch))

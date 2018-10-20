@@ -30,9 +30,9 @@ utf8proc_charwidth(ch) = Int(ccall(:utf8proc_charwidth, Cint, (UInt32,), ch))
 @inline utf8proc_cat_abbr(ch) =
     unsafe_string(ccall(:utf8proc_category_string, Cstring, (UInt32,), ch))
 
-@inline _lowercase_u(ch) = ccall(:utf8proc_tolower, UInt32, (UInt32,), ch)
-@inline _uppercase_u(ch) = ccall(:utf8proc_toupper, UInt32, (UInt32,), ch)
-@inline _titlecase_u(ch) = ccall(:utf8proc_totitle, UInt32, (UInt32,), ch)
+#@inline _lowercase_u(ch) = ccall(:utf8proc_tolower, UInt32, (UInt32,), ch)
+#@inline _uppercase_u(ch) = ccall(:utf8proc_toupper, UInt32, (UInt32,), ch)
+#@inline _titlecase_u(ch) = ccall(:utf8proc_totitle, UInt32, (UInt32,), ch)
 
 ############################################################################
 

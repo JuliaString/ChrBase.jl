@@ -21,14 +21,15 @@ using ModuleInterfaceTools
              LatinChars, ByteChars, WideChars, AbsChar, bytoff, chroff, chrdiff, utf_trail,
              codepoint_cse, codepoint_rng, codepoint_adj, utf8proc_error,
              write_utf8, write_utf16, _write_utf8_2, _write_utf8_3, _write_utf8_4, _write_ucs2,
-             _lowercase_l, _uppercase_l, _lowercase_u, _uppercase_u, _titlecase_u,
-             _islower_a, _islower_l, _islower_u, _isupper_a, _isupper_l, _isupper_al, _isupper_u,
-             _can_upper, _can_upper_l
+             _lowercase_l, _uppercase_l,
+             _is_lower_a, _is_lower_l, _is_lower_al, _is_lower_ch,
+             _is_upper_a, _is_upper_l, _is_upper_al, _is_upper_ch
 
 @api develop! _isvalid_chr
 
 include("core.jl")
 @static V6_COMPAT && include("compat.jl")
+include("CaseTables.jl"); using .CaseTables
 include("casefold.jl")
 include("io.jl")
 include("traits.jl")
