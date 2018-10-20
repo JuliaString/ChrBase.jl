@@ -26,7 +26,7 @@ titlecase(ch::ASCIIChr) = uppercase(ch)
 
 lowercase(ch::T) where {T<:LatinChars} = T(_lowercase_l(codepoint(ch)))
 
-_uppercase_latin(ch) = _can_upper_al(ch) ? ch - 0x20 : ch
+_uppercase_latin(ch) = _can_upper_al(ch) ? (ch - 0x20) : ch
 uppercase(ch::LatinChr) = LatinChr(_uppercase_latin(codepoint(ch)))
 
 # Special handling for case where this is just an optimization of the first 256 bytes of Unicode,
@@ -39,8 +39,6 @@ function uppercase(ch::_LatinChr)
     cb == 0xb5 ? UCS2Chr(0x39c) : cb == 0xff ? UCS2Chr(0x178) : ch
 end
 titlecase(ch::LatinChars) = uppercase(ch)
-
-const ct = CaseTables.ct
 
 @inline function _check_tab(mask, tab, ch)
     t = (ch >>> 9)
@@ -57,22 +55,22 @@ end
 @inline _get_tab_slp(mask, tab, ch) =
     (t = (ch >>> 9); ((mask >>> (t & 0x7f)) & 1) == 0 ? ch : _get_tab(tab[(t>>1)+1], ch, 0x10000))
 
-@inline _upper_lat(ch) = _get_tab(ct.u_tab[1], ch, 0x0000)
+@inline _upper_lat(ch) = _get_tab(CaseTables.ct.u_tab[1], ch, 0x0000)
 
-@inline _upper_bmp(ch) = _get_tab_bmp(ct.can_u_flg, ct.u_tab, ch)
-@inline _lower_bmp(ch) = _get_tab_bmp(ct.can_l_flg, ct.l_tab, ch)
-@inline _title_bmp(ch) = _get_tab_bmp(ct.can_u_flg, ct.t_tab, ch)
-@inline _upper_slp(ch) = _get_tab_slp(ct.can_su_flg, ct.u_tab, ch)
-@inline _lower_slp(ch) = _get_tab_slp(ct.can_sl_flg, ct.l_tab, ch)
+@inline _upper_bmp(ch) = _get_tab_bmp(CaseTables.ct.can_u_flg,  CaseTables.ct.u_tab, ch)
+@inline _lower_bmp(ch) = _get_tab_bmp(CaseTables.ct.can_l_flg,  CaseTables.ct.l_tab, ch)
+@inline _title_bmp(ch) = _get_tab_bmp(CaseTables.ct.can_u_flg,  CaseTables.ct.t_tab, ch)
+@inline _upper_slp(ch) = _get_tab_slp(CaseTables.ct.can_su_flg, CaseTables.ct.u_tab, ch)
+@inline _lower_slp(ch) = _get_tab_slp(CaseTables.ct.can_sl_flg, CaseTables.ct.l_tab, ch)
 
-@inline _can_lower_bmp(ch) = _check_tab(ct.can_l_flg, ct.can_l_tab, ch)
-@inline _can_upper_bmp(ch) = _check_tab(ct.can_u_flg, ct.can_u_tab, ch)
-@inline _can_lower_slp(ch) = _check_tab(ct.can_sl_flg, ct.can_l_tab, ch)
-@inline _can_upper_slp(ch) = _check_tab(ct.can_su_flg, ct.can_u_tab, ch)
-@inline _is_lower_bmp(ch)  = _check_tab(ct.is_l_flg, ct.is_l_tab, ch)
-@inline _is_upper_bmp(ch)  = _check_tab(ct.is_u_flg, ct.is_u_tab, ch)
-@inline _is_lower_slp(ch)  = _check_tab(ct.is_sl_flg, ct.is_sl_tab, ch)
-@inline _is_upper_slp(ch)  = _check_tab(ct.is_su_flg, ct.is_su_tab, ch)
+@inline _can_lower_bmp(ch) = _check_tab(CaseTables.ct.can_l_flg,  CaseTables.ct.can_l_tab, ch)
+@inline _can_upper_bmp(ch) = _check_tab(CaseTables.ct.can_u_flg,  CaseTables.ct.can_u_tab, ch)
+@inline _can_lower_slp(ch) = _check_tab(CaseTables.ct.can_sl_flg, CaseTables.ct.can_l_tab, ch)
+@inline _can_upper_slp(ch) = _check_tab(CaseTables.ct.can_su_flg, CaseTables.ct.can_u_tab, ch)
+@inline _is_lower_bmp(ch)  = _check_tab(CaseTables.ct.is_l_flg,   CaseTables.ct.is_l_tab,  ch)
+@inline _is_upper_bmp(ch)  = _check_tab(CaseTables.ct.is_u_flg,   CaseTables.ct.is_u_tab,  ch)
+@inline _is_lower_slp(ch)  = _check_tab(CaseTables.ct.is_sl_flg,  CaseTables.ct.is_l_tab,  ch)
+@inline _is_upper_slp(ch)  = _check_tab(CaseTables.ct.is_su_flg,  CaseTables.ct.is_u_tab,  ch)
 
 @inline _is_lower_ch(ch) =
     ch <= 0x7f ? _is_lower_a(ch) :
