@@ -28,3 +28,6 @@ in(x::Chr, y::Chr) = x == y
 +(x::Integer, y::Chr) = y + x
 show(io::IO, cp::Chr)  = show(io, Char(cp))
 print(io::IO, cp::Chr) = print(io, Char(cp))
+
+Base.hex(chr::C)      where {C<:Chr} = hex(codepoint(chr))
+Base.hex(chr::C, pad) where {C<:Chr} = hex(codepoint(chr), pad)
