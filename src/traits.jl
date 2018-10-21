@@ -22,6 +22,10 @@ _isvalid(::ValidatedStyle, ::Type{ASCIICharSet}, ::Type{T}, val) where {T<:CharS
  where {T<:Union{Text2CharSet, Text4CharSet, UCS2CharSet, UTF32CharSet}}) =
      is_latin(val)
 
+(_isvalid(::ValidatedStyle, ::Type{_LatinCharSet}, ::Type{T}, val)
+ where {T<:Union{Text2CharSet, Text4CharSet, UCS2CharSet, UTF32CharSet}}) =
+     is_latin(val)
+
 (_isvalid(::ValidatedStyle, ::Type{UCS2CharSet}, ::Type{T}, val)
  where {T<:Union{Text2CharSet, Text4CharSet, UTF32CharSet}}) =
      is_bmp(val)
