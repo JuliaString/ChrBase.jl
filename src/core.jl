@@ -39,8 +39,6 @@ const WideChars    = Union{UCS2Chr, UTF32Chr}
 
 codepoint_cse(::Type{Char}) = RawUTF8CSE
 
-const AbsChar = @static isdefined(Base, :AbstractChar) ? AbstractChar : Union{Char, AbstractChar}
-
 # Promotion rules for characters
 
 promote_rule(::Type{T}, ::Type{T}) where {T<:Chr} = T
@@ -100,26 +98,18 @@ codepoint_adj(::Type{T}, ch) where {T} = ifelse(ch < 0xd800, ch, ch+0x800)%T
 codepoint_adj(::Type{T}, ch) where {T<:Union{Text2Chr,Text4Chr}} = ch%T
 
 # returns a random valid Unicode scalar value in the correct range for the type of character
-@static if V6_COMPAT
-    import Base.Random: rand!, rand, AbstractRNG
-    rand(r::AbstractRNG, ::Type{T}) where {T<:Chr} =
-        codepoint_adj(T, rand(r, codepoint_rng(T)))
-    rand!(rng::AbstractRNG, A::AbstractArray, r::UnitRange{<:Chr}) =
-        rand!(rng, A, Base.Random.RangeGenerator(r))
-else
-    import Random: rand!, rand, AbstractRNG, SamplerType
+import Random: rand!, rand, AbstractRNG, SamplerType
     
-    rand(r::AbstractRNG, ::SamplerType{T}) where {T<:Chr} =
-        codepoint_adj(T, rand(r, codepoint_rng(T)))
-end
+rand(r::AbstractRNG, ::SamplerType{T}) where {T<:Chr} =
+    codepoint_adj(T, rand(r, codepoint_rng(T)))
 
-==(x::Chr, y::AbsChar) = codepoint(x) == codepoint(y)
-==(x::AbsChar, y::Chr) = codepoint(x) == codepoint(y)
-==(x::Chr, y::Chr)     = codepoint(x) == codepoint(y)
+==(x::Chr, y::AbstractChar) = codepoint(x) == codepoint(y)
+==(x::AbstractChar, y::Chr) = codepoint(x) == codepoint(y)
+==(x::Chr, y::Chr)          = codepoint(x) == codepoint(y)
 
-isless(x::Chr, y::AbsChar) = codepoint(x) < codepoint(y)
-isless(x::AbsChar, y::Chr) = codepoint(x) < codepoint(y)
-isless(x::Chr, y::Chr)     = codepoint(x) < codepoint(y)
+isless(x::Chr, y::AbstractChar) = codepoint(x) < codepoint(y)
+isless(x::AbstractChar, y::Chr) = codepoint(x) < codepoint(y)
+isless(x::Chr, y::Chr)          = codepoint(x) < codepoint(y)
 
 # This is so that the hash is compatible with isless, but it's very inefficient
 Base.hash(x::Chr, h::UInt) = hash(Char(x), h)

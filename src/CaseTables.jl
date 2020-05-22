@@ -2,7 +2,7 @@ __precompile__(true)
 """
 Case folding tables for Unicode characters
 
-Copyright 2018 Gandalf Software, Inc., Scott P. Jones
+Copyright 2018-2020 Gandalf Software, Inc., Scott P. Jones
 Licensed under MIT License, see LICENSE.md
 """
 module CaseTables
@@ -33,8 +33,6 @@ struct CaseTable
     max_siz_l::UInt32
     max_siz_u::UInt32
 end
-
-@static VERSION < v"0.7-" && (const islowercase = islower; const isuppercase = isupper)
 
 # Calculate tables (later move these to library built based on Unicode tables with BinaryBuilder,
 # loaded by BinaryProvider)
