@@ -1,17 +1,17 @@
 #=
 Case folding for Unicode Chr types
 
-Copyright 2017-2018 Gandalf Software, Inc., Scott P. Jones
+Copyright 2017-2020 Gandalf Software, Inc., Scott P. Jones
 Licensed under MIT License, see LICENSE.md
 =#
 
-@inline _can_upper_lat(c) = ifelse(c > (V6_COMPAT ? 0xdf : 0xde), c != 0xf7, c == 0xb5)
+@inline _can_upper_lat(c) = ifelse(c > 0xde, c != 0xf7, c == 0xb5)
 
-_wide_lower_latin(ch) = (ch == 0xb5) | (ch == 0xff) | (!V6_COMPAT && (ch == 0xdf))
+_wide_lower_latin(ch) = (ch == 0xb5) | (ch == 0xff) | (ch == 0xdf)
 
 _wide_upper(ch) =
     ifelse(ch == 0xb5, 0x39c,
-           ifelse(ch == 0xff, 0x178, ifelse(!V6_COMPAT && ch == 0xdf, 0x1e9e, ch%UInt16)))
+           ifelse(ch == 0xff, 0x178, ifelse(ch == 0xdf, 0x1e9e, ch%UInt16)))
 
 _lowercase_l(ch) = _is_upper_al(ch)  ? (ch + 0x20) : ch
 _uppercase_l(ch) = _can_upper_al(ch) ? (ch - 0x20) : _wide_upper(ch)
@@ -35,8 +35,7 @@ function uppercase(ch::_LatinChr)
     cb = codepoint(ch)
     _can_upper_al(cb) && return _LatinChr(cb - 0x20)
     # We didn't used to uppercase 0xdf, the ß character, now we do
-    !V6_COMPAT && cb == 0xdf && return UCS2Chr(0x1e9e)
-    cb == 0xb5 ? UCS2Chr(0x39c) : cb == 0xff ? UCS2Chr(0x178) : ch
+    cb == 0xdf ? UCS2Chr(0x1e9e) : cb == 0xb5 ? UCS2Chr(0x39c) : cb == 0xff ? UCS2Chr(0x178) : ch
 end
 titlecase(ch::LatinChars) = uppercase(ch)
 
