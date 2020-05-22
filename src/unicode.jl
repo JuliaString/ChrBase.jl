@@ -1,25 +1,15 @@
 #=
 Character classification functions
 
-Copyright 2017-2018 Gandalf Software, Inc., Scott P. Jones,
+Copyright 2017-2020 Gandalf Software, Inc., Scott P. Jones,
 Licensed under MIT License, see LICENSE.md
 =#
 
 # Todo: add correct definitions for is_letter, is_alphabetic
 
-# Recommended by deprecate
-@static if V6_COMPAT
-    text_width(ch::Char) = charwidth(ch)
-
-    import Base: is_assigned_char, isnumber
-    Base.is_assigned_char(ch::Chr) = is_assigned(ch)
-    Base.charwidth(ch::Chr) = text_width(ch)
-    isnumber(val::Chr) = is_numeric(val)
-else
-    Base.Unicode.isassigned(ch::Chr) = is_assigned(ch)
-    is_graphic(ch::Char) = is_graphic(codepoint(ch))
-    is_alphanumeric(ch::Char) = is_alphanumeric(codepoint(ch))
-end
+Base.Unicode.isassigned(ch::Chr) = is_assigned(ch)
+is_graphic(ch::Char) = is_graphic(codepoint(ch))
+is_alphanumeric(ch::Char) = is_alphanumeric(codepoint(ch))
 
 ############################################################################
 
@@ -34,14 +24,14 @@ text_width(ch::ASCIIChr) = Int(32 <= codepoint(ch) <= 126)
 ############################################################################
 
 # returns code in 0:30 giving Unicode category
-@inline category_code(ch::CodeUnitTypes) = ch <= 0x10ffff ? utf8proc_cat(ch) : Cint(30)
+#@inline category_code(ch::CodeUnitTypes) = ch <= 0x10ffff ? utf8proc_cat(ch) : Cint(30)
 @inline category_code(ch::Chr) = category_code(codepoint(ch))
 
 # more human-readable representations of the category code
-@inline category_abbrev(ch::CodeUnitTypes) = ch <= 0x10ffff ? utf8proc_cat_abbr(ch) : "In"
-@inline category_abbrev(ch::Chr)           = category_abbrev(codepoint(ch))
+@inline _category_abbrev(ch::CodeUnitTypes) = ch <= 0x10ffff ? utf8proc_cat_abbr(ch) : "In"
+@inline category_abbrev(ch::Chr)            = _category_abbrev(codepoint(ch))
 
-category_string(ch::CodeUnitTypes) = Uni.category_strings[category_code(ch) + 1]
+#category_string(ch::CodeUnitTypes) = Uni.category_strings[category_code(ch) + 1]
 category_string(ch::Chr)           = category_string(codepoint(ch))
 
 is_assigned(ch::CodeUnitTypes) = category_code(ch) != Uni.Cn
@@ -49,7 +39,7 @@ is_assigned(ch::Chr)           = is_assigned(codepoint(ch))
 
 _cat_mask(a) = UInt(a)
 @inline _cat_mask(a, b) = (UInt(1) << (a%UInt)) | (UInt(1) << (b%UInt))
-@inline _cat_mask(rng::(@static V6_COMPAT ? Range : AbstractRange)) =
+@inline _cat_mask(rng::AbstractRange) =
     ((UInt(2) << (rng.stop%UInt)) - UInt(1)) & ~((UInt(1) << (rng.start%UInt)) - UInt(1))
 
 @inline _check_mask(ch, mask) = ((UInt(1) << (category_code(ch)%UInt)) & mask) != 0
@@ -163,12 +153,7 @@ end
 
 ############################################################################
 
-@static if isdefined(Base, :ismalformed)
-    Base.ismalformed(ch::Chr) = false
-    Base.isoverlong(ch::Chr) = false
-    is_malformed(ch) = ismalformed(ch)
-    is_overlong(ch) = isoverlong(ch)
-else
-    is_malformed(ch) = false
-    is_overlong(ch) = false
-end
+Base.ismalformed(ch::Chr) = false
+Base.isoverlong(ch::Chr) = false
+is_malformed(ch) = ismalformed(ch)
+is_overlong(ch) = isoverlong(ch)

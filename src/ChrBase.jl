@@ -28,7 +28,6 @@ using ModuleInterfaceTools
 @api develop! _isvalid_chr
 
 include("core.jl")
-@static V6_COMPAT && include("compat.jl")
 include("CaseTables.jl"); using .CaseTables
 include("casefold.jl")
 include("io.jl")
