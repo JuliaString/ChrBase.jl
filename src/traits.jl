@@ -4,10 +4,9 @@
 ## Set traits for character types ##
 
 ValidatedStyle(::Type{<:AbstractChar}) = UnknownValidity()
-@static isdefined(Base, :AbstractChar) || (ValidatedStyle(::Type{Char}) = UnknownValidity())
 ValidatedStyle(::Type{<:Chr}) = AlwaysValid()
 
-ValidatedStyle(A::T) where {T<:AbsChar} = ValidatedStyle(T)
+ValidatedStyle(A::T) where {T<:AbstractChar} = ValidatedStyle(T)
 
 CharSetStyle(::Type{ASCIIChr})  = CharSetASCIICompat()
 CharSetStyle(::Type{LatinChr})  = CharSetISOCompat()

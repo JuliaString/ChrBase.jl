@@ -19,11 +19,11 @@ Licensed under MIT License, see LICENSE.md
 
 ## outputting Str strings and Chr characters ##
 
-@inline _write(::Type{<:CSE}, io, ch::AbsChar)    = write(io, codepoint(ch))
-@inline _write(::Type{UTF8CSE}, io, ch::AbsChar)  = write_utf8(io, codepoint(ch))
-@inline _write(::Type{UTF16CSE}, io, ch::AbsChar) = write_utf16(io, codepoint(ch))
+@inline _write(::Type{<:CSE}, io, ch::AbstractChar)    = write(io, codepoint(ch))
+@inline _write(::Type{UTF8CSE}, io, ch::AbstractChar)  = write_utf8(io, codepoint(ch))
+@inline _write(::Type{UTF16CSE}, io, ch::AbstractChar) = write_utf16(io, codepoint(ch))
 
-@inline _write(::Type{RawUTF8CSE}, io, ch::AbsChar) = print(io, codepoint(ch))
+@inline _write(::Type{RawUTF8CSE}, io, ch::AbstractChar) = print(io, codepoint(ch))
 
 @inline write(io::IO, ch::Chr) = write(io, codepoint(ch))
 
