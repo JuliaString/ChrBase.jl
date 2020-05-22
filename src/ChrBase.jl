@@ -33,8 +33,8 @@ include("CaseTables.jl"); using .CaseTables
 include("casefold.jl")
 include("io.jl")
 include("traits.jl")
-include("unicode.jl")
 include("utf8proc.jl")
+include("unicode.jl")
 
 @api freeze
 
