@@ -2,14 +2,17 @@
 
 | **Info** | **Windows** | **Linux & MacOS** | **Package Evaluator** | **CodeCov** | **Coveralls** |
 |:------------------:|:------------------:|:---------------------:|:-----------------:|:---------------------:|:-----------------:|
-| [![][license-img]][license-url] | [![][app-s-img]][app-s-url] | [![][travis-s-img]][travis-url] | [![][pkg-s-img]][pkg-s-url] | [![][codecov-img]][codecov-url] | [![][coverall-s-img]][coverall-s-url]
-| [![][gitter-img]][gitter-url] | [![][app-m-img]][app-m-url] | [![][travis-m-img]][travis-url] | [![][pkg-m-img]][pkg-m-url] | [![][codecov-img]][codecov-url] | [![][coverall-m-img]][coverall-m-url]
+| [![][license-img]][license-url] | [![][app-s-img]][app-s-url] | [![][travis-s-img]][travis-url] | [![][pkgeval-img]][pkgeval-url] | [![][codecov-img]][codecov-url] | [![][coverall-s-img]][coverall-s-url]
+| [![][gitter-img]][gitter-url] | [![][app-m-img]][app-m-url] | [![][travis-m-img]][travis-url] | [![][pkgeval-img]][pkgeval-url] | [![][codecov-img]][codecov-url] | [![][coverall-m-img]][coverall-m-url]
 
 [license-img]:  http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat
 [license-url]:  LICENSE.md
 
 [gitter-img]:   https://badges.gitter.im/Join%20Chat.svg
 [gitter-url]:   https://gitter.im/JuliaString/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
+
+[pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/C/ChrBase.svg
+[pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html
 
 [travis-url]:   https://travis-ci.org/JuliaString/ChrBase.jl
 [travis-s-img]: https://travis-ci.org/JuliaString/ChrBase.jl.svg
@@ -19,11 +22,6 @@
 [app-m-url]:    https://ci.appveyor.com/project/ScottPJones/chrbase-jl/branch/master
 [app-s-img]:    https://ci.appveyor.com/api/projects/status/lrdfni7si4o797fr?svg=true
 [app-m-img]:    https://ci.appveyor.com/api/projects/status/lrdfni7si4o797fr/branch/master?svg=true
-
-[pkg-s-url]:    http://pkg.julialang.org/detail/ChrBase
-[pkg-m-url]:    http://pkg.julialang.org/detail/ChrBase
-[pkg-s-img]:    http://pkg.julialang.org/badges/ChrBase_0.6.svg
-[pkg-m-img]:    http://pkg.julialang.org/badges/ChrBase_0.7.svg
 
 [codecov-url]:  https://codecov.io/gh/JuliaString/ChrBase.jl
 [codecov-img]:  https://codecov.io/gh/JuliaString/ChrBase.jl/branch/master/graph/badge.svg

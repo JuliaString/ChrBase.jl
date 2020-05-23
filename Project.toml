@@ -23,6 +23,6 @@ test = ["Test"]
 
 [compat]
 julia = "^1.0.0"
-ModuleInterfaceTools = "≥ 1.0.0"
-StrAPI = "≥ 1.0.0"
-CharSetEncodings = "≥ 1.0.0"
+ModuleInterfaceTools = "1"
+StrAPI = "1"
+CharSetEncodings = "1"
