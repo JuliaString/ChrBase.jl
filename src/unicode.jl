@@ -81,8 +81,8 @@ const _isnumeric_a = _isdigit
 @inline _isnumeric_l(ch) = (ch <= 0xbe && ((1<<(ch-0xb2)) & 0x1c83) != 0)
 @inline _ispunct_l(ch)   = ((UInt64(1) << (ch-0x80)) & 0x88c0_0882_0000_0000) != 0
 @inline _isspace_l(ch)   = (ch == 0x85) | (ch == 0xa0)
-@inline _isalpha_l(c)    = ((0xc0 <= c <= 0xff) & (c != 0xf7) & (c != 0xd7)) | (c == 0xb5)
-@inline _isalnum_l(c)    = _isalpha_l(c) || _isnumeric_l(c)
+@inline _isalpha_l(ch)   = ((0xff7f_ffff_ff7f_ffff_0420_0400_0000_0000 >>> (ch-0x80)) & 1) != 0
+@inline _isalnum_l(ch)   = _isalpha_l(ch) || _isnumeric_l(ch)
 @inline _isprint_l(ch)   = ((0xa0 <= ch <= 0xff) & (ch != 0xad))
 @inline _isgraph_l(ch)   = ((0xa0 < ch <= 0xff) & (ch != 0xad))
 
