@@ -79,7 +79,10 @@ rem(x::Chr, ::Type{T}) where {T<:Chr}    = (x.v)%T
 rem(x::Chr, ::Type{T}) where {T<:Char}   = (x.v)%T
 rem(x::Chr, ::Type{T}) where {T<:Number} = (x.v)%T
 
-(::Type{S})(v::T) where {S<:Union{UInt32, Int, UInt}, T<:Chr} = codepoint(v)%S
+(::Type{UInt32})(v::Chr) = codepoint(v)%UInt32
+(::Type{UInt64})(v::Chr) = codepoint(v)%UInt64
+(::Type{Int32})(v::Chr) = codepoint(v)%Int32
+(::Type{Int64})(v::Chr) = codepoint(v)%Int64
 (::Type{Char})(v::Chr) = Char(codepoint(v))
 (::Type{T})(v::Char) where {T<:Chr} = T(codepoint(v))
 
